@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
+}
+
+body {
+  @apply bg-zinc-950 text-zinc-100;
+}
+
+/* Custom Scrollfor Sidebar */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-zinc-700) var(--color-zinc-900);
+}
+
+/* Webkit scrollbar fallback if needed, but standard prop is better */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: var(--color-zinc-900);
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: var(--color-zinc-700);
+  border-radius: 9999px;
+}
