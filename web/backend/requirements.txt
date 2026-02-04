@@ -5,3 +5,4 @@ sqlalchemy>=2.0.0
 python-multipart
 alembic
 pytest
+psycopg2-binary
