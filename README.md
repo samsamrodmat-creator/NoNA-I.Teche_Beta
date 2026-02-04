@@ -1,79 +1,111 @@
-# NoNA Feasibility Calculator
 
-**NoNA** (Normativa - Numbers - Analysis) is a professional real estate feasibility tool designed for the Mexican market. It calculates regulatory potential (COS, CUS, CAS), financial viability, and construction costs for mixed-use developments.
+<div align="center">
 
-## 🚀 Web Interface (New v2.0)
-The project now includes a standalone web application for easier access and scenario management.
+  # 🏙️ NoNA | Feasibility Intelligence
+  
+  **Next-Gen Real Estate Financial Modeling & Normative Analysis**
 
-### Features
-*   **Real-time Dashboard**: Modify land/normative parameters and see instant financial results.
-### Pro Features
-*   **📊 Advanced Reports**: 
-    *   **Investment Teaser**: Professional A4 PDF Executive Summary with key financial metrics and charts.
-    *   **Mathematical Audit**: Detailed formula breakdown justifying every calculation step.
-*   **🗺️ Interactive Map**: Integrated OpenStreetMap to pinpoint project location.
-*   **⚙️ Configurable Params**: Adjust construction, demolition, and soft cost assumptions globally from the Settings.
-*   **📂 Scenarios**: Save multiple versions (e.g. "Scenario A: High Density", "Scenario B: Mixed Use") per client key.
-*   **Key Metrics**: Includes ROI, Total Cost, "Costo por Depto", and dynamic Profit Margin analysis.
+  [![Status](https://img.shields.io/badge/Status-Beta-blue)]()
+  [![Stack](https://img.shields.io/badge/Stack-Next.js_14_|_FastAPI_|_PostgreSQL-black)]()
+  [![License](https://img.shields.io/badge/License-Proprietary-red)]()
 
-### Installation & Usage
-
-**Prerequisites**:
-*   Python 3.10+
-*   Node.js 18+ (npm)
-
-#### 1. Start the Backend (Analytic Engine)
-The backend handles calculations, database (`nona.db`), and PDF generation logic.
-```bash
-cd web/backend
-# Create virtual env (recommended)
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run Server
-uvicorn main:app --reload
-```
-*   Server API: `http://localhost:8000`
-*   Docs (Swagger): `http://localhost:8000/docs`
-
-#### 2. Start the Frontend (Visual Dashboard)
-The user interface where you input data.
-```bash
-cd web/frontend
-npm install
-npm run dev
-```
-*   Open Browser: `http://localhost:3000`
+  <p align="center">
+    <a href="#-about">About</a> •
+    <a href="#-key-features">Features</a> •
+    <a href="#-architecture">Architecture</a> •
+    <a href="#-getting-started">Getting Started</a> •
+    <a href="DEPLOYMENT_GUIDE.md">Deployment</a>
+  </p>
+</div>
 
 ---
 
-## 🏗️ Grasshopper Component (Legacy)
-The original Python script for Rhino 3D / Grasshopper is available in `NoNA.py`. It shares the same logic structure but operates within Rhino 7/8.
+## 💡 About
 
-### Data Inputs
-| Input Name | Type | Description |
+**NoNA** (Normativa • Numbers • Analysis) is an enterprise-grade feasibility platform engineered for agile real estate developers in the Mexican market. It bridges the critical gap between urban regulations (*Normativa*) and complex financial modeling.
+
+Unlike traditional static spreadsheets, NoNA offers a **dynamic, real-time environment** where architectural massing (COS/CUS) directly drives financial outcomes (ROI, Net Profit), enabling teams to iterate on feasibility 10x faster.
+
+## 🚀 Key Features
+
+- **⚡️ Real-Time Feasibility Engine**
+  - Instant calculation of regulatory potentials (COS, CUS, CAS) and financial metrics.
+  - Sub-second latency for complex "what-if" scenario modeling.
+
+- **📊 Advanced Financial Intelligence**
+  - Dynamic residual land value analysis.
+  - Automated sensitivity analysis for construction costs and sales prices.
+  - "Glass Box" philosophy: [Full transparency on mathematical formulas](MATHEMATICAL_FORMULAS.md).
+
+- **📍 Geospatial Integration**
+  - Integrated OpenStreetMap (Leaflet) for precise site selection.
+  - Competitive landscape visualization (Future Roadmap).
+
+- **📝 Executive Reporting**
+  - One-click generation of institutional-grade Investment Teasers (PDF).
+  - Automated visual stacking diagrams and massing previews.
+
+## 🛠 Architecture
+
+The platform is built on a modern, type-safe, and scalable stack designed for cloud deployment.
+
+| Component | Technology | Description |
 | :--- | :--- | :--- |
-| `area_terreno` | Surface | The 3D surface representing the land plot. |
-| `valor_terreno` | Number | Land cost per square meter (MXN). |
-| `COS` | Number | Coeficiente de Ocupación del Suelo (0.0 - 1.0). |
-| `CUS` | Number | Coeficiente de Utilización del Suelo (e.g., 2.5). |
-| `CAS` | Number | Coeficiente de Absorción del Suelo (0.0 - 1.0). |
-| ... | ... | (See script for full list) |
+| **Frontend** | **Next.js 14** | React Server Components, TypeScript, TailwindCSS v4. |
+| **Backend** | **FastAPI** | High-performance Python async framework. |
+| **Database** | **PostgreSQL** | Relational data persistence (SQLite for local dev). |
+| **ORM** | **SQLAlchemy** | Robust database abstraction and schema management. |
+| **DevOps** | **Docker** | Container-ready (Vercel/Railway compatible). |
 
-### Outputs
-*   **Metrics**: Formatted text strings for dashboard displays (e.g., "$10,500,000.00 mxn").
-*   **Raw Numbers**: Numeric values for downstream Grasshopper components.
+## 📂 Repository Structure
+
+```bash
+NoNA/
+├── web/
+│   ├── frontend/      # Next.js Application (UI Layer)
+│   └── backend/       # FastAPI Service (Logic Layer)
+├── MATHEMATICAL_FORMULAS.md  # Documentation of Core financial logic
+├── DEPLOYMENT_GUIDE.md       # CI/CD & Cloud Deployment Instructions
+└── README.md                 # Project Documentation
+```
+
+## 🏁 Getting Started
+
+### Prerequisites
+- Node.js 18+
+- Python 3.10+
+
+### Installation
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/NoNA-Beta.git
+   cd NoNA
+   ```
+
+2. **Backend Setup**
+   ```bash
+   cd web/backend
+   python -m venv venv
+   source venv/bin/activate  # Windows: venv\Scripts\activate
+   pip install -r requirements.txt
+   uvicorn main:app --reload
+   ```
+
+3. **Frontend Setup**
+   ```bash
+   cd web/frontend
+   npm install
+   cp .env.example .env.local # Configure API URL
+   npm run dev
+   ```
+
+## 📄 License
+
+**© 2026 Samuel R. & Advanced Development Team.**
+All Rights Reserved. This software is proprietary and confidential. Unauthorized copying, distribution, or use is strictly prohibited.
 
 ---
-
-## 🛠️ Architecture
-*   **Frontend**: Next.js 14, React, Tailwind CSS, Lucide Icons.
-*   **Backend**: FastAPI, Pydantic, SQLAlchemy, SQLite.
-*   **Core Logic**: `web/backend/logic.py` (Refactored from `NoNA.py`).
-*   **Formulas**: [Mathematical Formulas](MATHEMATICAL_FORMULAS.md)
-
-## ⚠️ Disclaimer
-This tool provides estimates for feasibility analysis only. It does not replace professional structural engineering, official government zoning certificates, or detailed architectural budgeting.
+<div align="center">
+  <sub>Built with precision for the modern developer.</sub>
+</div>
