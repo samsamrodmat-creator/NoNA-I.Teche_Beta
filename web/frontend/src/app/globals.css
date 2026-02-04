@@ -1,13 +1,88 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Override modern colors with Hex for html2canvas compatibility */
+
+  /* Zinc */
+  --color-zinc-50: #fafafa;
+  --color-zinc-100: #f4f4f5;
+  --color-zinc-200: #e4e4e7;
+  --color-zinc-300: #d4d4d8;
+  --color-zinc-400: #a1a1aa;
+  --color-zinc-500: #71717a;
+  --color-zinc-600: #52525b;
+  --color-zinc-700: #3f3f46;
+  --color-zinc-800: #27272a;
+  --color-zinc-900: #18181b;
+  --color-zinc-950: #09090b;
+
+  /* Indigo */
+  --color-indigo-50: #eef2ff;
+  --color-indigo-100: #e0e7ff;
+  --color-indigo-200: #c7d2fe;
+  --color-indigo-300: #a5b4fc;
+  --color-indigo-400: #818cf8;
+  --color-indigo-500: #6366f1;
+  --color-indigo-600: #4f46e5;
+  --color-indigo-700: #4338ca;
+  --color-indigo-800: #3730a3;
+  --color-indigo-900: #312e81;
+  --color-indigo-950: #1e1b4b;
+
+  /* Emerald */
+  --color-emerald-400: #34d399;
+  --color-emerald-500: #10b981;
+  --color-emerald-600: #059669;
+  --color-emerald-900: #064e3b;
+  --color-emerald-950: #022c22;
+
+  /* Red */
+  --color-red-500: #ef4444;
+  --color-red-600: #dc2626;
+  --color-red-900: #7f1d1d;
+  --color-red-950: #450a0a;
+
+  /* Blue (Used in StackingDiagram) */
+  --color-blue-500: #3b82f6;
+
+  /* Neutrals */
+  --color-black: #000000;
+  --color-white: #ffffff;
+}
+
 :root {
-  --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 0, 0, 0;
-  --background-end-rgb: 0, 0, 0;
+  --background: #fafafa;
+  /* Zinc 50 */
+  --foreground: #18181b;
+  /* Zinc 900 */
+
+  /* Light Mode Gradients */
+  --gradient-start: rgba(99, 102, 241, 0.05);
+  /* Indigo-500 low opacity */
+  --gradient-end: transparent;
+  --bg-gradient: radial-gradient(circle at 50% 0%, var(--gradient-start) 0%, var(--gradient-end) 50%), linear-gradient(180deg, #fafafa 0%, #f4f4f5 100%);
+}
+
+.dark {
+  --background: #09090b;
+  /* Zinc 950 */
+  --foreground: #f4f4f5;
+  /* Zinc 100 */
+
+  /* Dark Mode Gradients */
+  --gradient-start: rgba(99, 102, 241, 0.1);
+  --gradient-end: transparent;
+  --bg-gradient: radial-gradient(circle at 50% 0%, var(--gradient-start) 0%, var(--gradient-end) 50%), linear-gradient(180deg, #18181b 0%, #09090b 100%);
 }
 
 body {
-  @apply bg-zinc-950 text-zinc-100;
+  background: var(--bg-gradient);
+  color: var(--foreground);
+  min-height: 100vh;
+  background-attachment: fixed;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 /* Custom Scrollfor Sidebar */

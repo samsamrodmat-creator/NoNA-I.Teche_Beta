@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 import logic
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 import database
 
@@ -57,6 +58,30 @@ class CalculationRequest(BaseModel):
     utilidadDeseada: float
     correrSimulacion: bool
 
+    utilidadDeseada: float
+    correrSimulacion: bool
+
+    # New fields for v4
+    project_name: Optional[str] = "Nuevo Proyecto"
+    address: Optional[str] = ""
+    lat: Optional[float] = 0.0
+    lng: Optional[float] = 0.0
+    
+    # Financial
+    iva_percent: Optional[float] = 0.16
+
+class ParameterUpdate(BaseModel):
+    key: str
+    value: float
+
+class ParameterOut(BaseModel):
+    key: str
+    value: float
+    description: str
+    group: str
+    class Config:
+        orm_mode = True
+
 class CustomerCreate(BaseModel):
     name: str
 
@@ -83,12 +108,55 @@ class ScenarioOut(BaseModel):
 # --- Endpoints ---
 
 @app.post("/calculate")
-async def calculate(req: CalculationRequest):
+async def calculate(req: CalculationRequest, db: Session = Depends(get_db)):
+    # 1. Fetch current parameters from DB
+    params_db = db.query(database.Parameter).all()
+    params_dict = {p.key: p.value for p in params_db}
+    
+    # 2. Inject into payload
     data = req.dict()
+    data['parameters'] = params_dict
+    
+    # 3. Run Logic
     result = logic.run_calculation(data)
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
     return result
+
+@app.post("/export/csv")
+async def export_csv(req: CalculationRequest, db: Session = Depends(get_db)):
+    # 1. Fetch current parameters from DB
+    params_db = db.query(database.Parameter).all()
+    params_dict = {p.key: p.value for p in params_db}
+    
+    # 2. Inject into payload
+    data = req.dict()
+    data['parameters'] = params_dict
+    
+    # 3. Run Logic
+    result = logic.run_calculation(data)
+    
+    # 4. Generate CSV
+    csv_content = logic.generate_csv_content(result)
+    
+    return StreamingResponse(
+        iter([csv_content]),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=calculo_nona.csv"}
+    )
+
+@app.get("/parameters", response_model=List[ParameterOut])
+def get_parameters(db: Session = Depends(get_db)):
+    return db.query(database.Parameter).all()
+
+@app.put("/parameters")
+def update_parameters(updates: List[ParameterUpdate], db: Session = Depends(get_db)):
+    for up in updates:
+        db_param = db.query(database.Parameter).filter(database.Parameter.key == up.key).first()
+        if db_param:
+            db_param.value = up.value
+    db.commit()
+    return {"status": "updated"}
 
 # Customer Endpoints
 @app.get("/customers", response_model=List[CustomerOut])

@@ -3,9 +3,18 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from datetime import datetime
 
-DATABASE_URL = "sqlite:///./nona.db"
+import os
 
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./nona.db")
+
+# Handle Render/Railway postgres:// vs postgresql://
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+if "sqlite" in DATABASE_URL:
+    engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+else:
+    engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
@@ -34,6 +43,15 @@ class Scenario(Base):
     result_summary = Column(JSON)
     
     customer = relationship("Customer", back_populates="scenarios")
+
+class Parameter(Base):
+    __tablename__ = "parameters"
+    
+    key = Column(String, primary_key=True, index=True)
+    value = Column(Float)
+    description = Column(String)
+    group = Column(String, index=True) # Costos, Normativa, etc.
+
 
 def init_db():
     Base.metadata.create_all(bind=engine)
