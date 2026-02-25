@@ -27,7 +27,7 @@ export default function TeamSection() {
             bio: [
                 "Arquitecto por la Universidad Iberoamericana, con experiencia en obra pública y privada, especializado en la articulación entre diseño arquitectónico y ejecución técnica.",
                 "Participó en procesos de reconstrucción estructural tras el sismo de 2017 en México, así como en el desarrollo de vivienda plurifamiliar en contextos urbanos consolidados, aportando un enfoque riguroso en normativa, sistemas constructivos y viabilidad técnica.",
-                "En NoNA, Diego Quezada Méndez integra la experiencia de campo al desarrollo tecnológico, asegurando que los algoritmos de factibilidad respondan a criterios constructivos reales, normativa vigente y condiciones operativas del mercado. Su enfoque garantiza que la automatización no pierda lógica técnica, sostenibilidad ni dimensión humana."
+                "En NoNA,integra la experiencia de campo al desarrollo tecnológico, asegurando que los algoritmos de factibilidad respondan a criterios constructivos reales, normativa vigente y condiciones operativas del mercado. Su enfoque garantiza que la automatización no pierda lógica técnica, sostenibilidad ni dimensión humana."
             ]
         }
     ];
