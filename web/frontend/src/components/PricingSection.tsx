@@ -122,7 +122,7 @@ export default function PricingSection() {
                             <h3 className="text-xl font-bold text-slate-900">Normal</h3>
                             <p className="text-xs text-slate-500 mt-2">Para arquitectos independientes.</p>
                             <div className="mt-6 flex items-baseline gap-1">
-                                <span className="text-4xl font-black text-slate-900">$999.00</span>
+                                <span className="text-4xl font-black text-slate-900 blur-sm select-none">$999.00</span>
                                 <span className="text-xs text-slate-500 font-medium">MXN/mes</span>
                             </div>
                         </div>
@@ -172,7 +172,7 @@ export default function PricingSection() {
                             <h3 className="text-xl font-bold text-white">Pro</h3>
                             <p className="text-xs text-slate-400 mt-2">Para firmas y comercializadoras.</p>
                             <div className="mt-6 flex items-baseline gap-1">
-                                <span className="text-4xl font-black text-white">$2,999.00</span>
+                                <span className="text-4xl font-black text-white blur-sm select-none">$2,999.00</span>
                                 <span className="text-xs text-slate-400 font-medium">MXN/mes</span>
                             </div>
                         </div>
@@ -218,7 +218,7 @@ export default function PricingSection() {
                             <h3 className="text-xl font-bold text-slate-900">Desarrollador</h3>
                             <p className="text-xs text-slate-500 mt-2">Integración tecnológica total.</p>
                             <div className="mt-6 flex items-baseline gap-1">
-                                <span className="text-4xl font-black text-slate-900">$7,999.00</span>
+                                <span className="text-4xl font-black text-slate-900 blur-sm select-none">$7,999.00</span>
                                 <span className="text-xs text-slate-500 font-medium">MXN/mes</span>
                             </div>
                         </div>

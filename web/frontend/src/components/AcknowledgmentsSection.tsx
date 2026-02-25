@@ -52,7 +52,8 @@ export default function AcknowledgmentsSection() {
         "Josue",
         "Ximena F",
         "Rubén B",
-        "Andres O"
+        "Andres O",
+        "Diego Q, Agradezco a mis padres y hermana por el respaldo constante, a Antonella por su confianza y apoyo incondicional"
     ];
 
     return (

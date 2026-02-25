@@ -115,32 +115,7 @@ export default function LandingPage() {
                             <CountdownTimer />
                         </div>
 
-                        {/* Enter Button - Technical Style */}
-                        <div className="pt-2 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-                            <button
-                                onClick={handleEnter}
-                                disabled={isLoading}
-                                className={`group relative inline-flex items-center justify-center px-12 py-4 text-sm uppercase tracking-widest font-bold text-slate-500 transition-all duration-300 
-                                bg-white/40 border border-slate-200 rounded-full shadow-sm
-                                ${isLoading ? 'bg-blue-50 text-blue-400 cursor-wait' : 'hover:bg-blue-600 hover:border-blue-600 hover:text-white hover:shadow-[0_10px_30px_rgba(37,99,235,0.3)]'}
-                                focus:outline-none`}
-                            >
-                                <span>{isLoading ? 'Inicializando...' : 'Ingresar'}</span>
-                                {!isLoading && (
-                                    <svg
-                                        className="w-4 h-4 ml-3 opacity-50 transition-transform duration-300 group-hover:translate-x-1 group-hover:opacity-100"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                    >
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                    </svg>
-                                )}
-                                {isLoading && (
-                                    <div className="ml-3 h-4 w-4 animate-spin rounded-full border-2 border-blue-400 border-t-transparent" />
-                                )}
-                            </button>
-                        </div>
+
                     </div> {/* End of Hero Card Content */}
 
                     {/* Scroll Indicator - Fixed to Viewport */}
