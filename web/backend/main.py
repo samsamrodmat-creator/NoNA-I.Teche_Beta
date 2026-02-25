@@ -136,13 +136,13 @@ async def export_csv(req: CalculationRequest, db: Session = Depends(get_db)):
     # 3. Run Logic
     result = logic.run_calculation(data)
     
-    # 4. Generate CSV
-    csv_content = logic.generate_csv_content(result)
+    # 4. Generate Excel
+    excel_content = logic.generate_excel_content(result)
     
     return StreamingResponse(
-        iter([csv_content]),
-        media_type="text/csv",
-        headers={"Content-Disposition": "attachment; filename=calculo_nona.csv"}
+        iter([excel_content]),
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": "attachment; filename=Reporte_NoNA.xlsx"}
     )
 
 @app.get("/parameters", response_model=List[ParameterOut])

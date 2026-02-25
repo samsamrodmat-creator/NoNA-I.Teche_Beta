@@ -16,8 +16,8 @@ interface SelectFieldProps {
 
 export function SelectField({ label, value, onChange, options, icon: Icon, disabled }: SelectFieldProps) {
     return (
-        <div className="group">
-            <label className="text-xs text-zinc-500 font-medium mb-1.5 block group-hover:text-zinc-400 transition-colors">
+        <div className="group space-y-1.5">
+            <label className="text-[10px] uppercase tracking-widest font-bold text-slate-500 block transition-colors group-hover:text-blue-500">
                 {label}
             </label>
             <div className="relative">
@@ -25,9 +25,9 @@ export function SelectField({ label, value, onChange, options, icon: Icon, disab
                     value={value}
                     onChange={onChange}
                     disabled={disabled}
-                    className="w-full bg-white dark:bg-zinc-900 border border-black/30 dark:border-zinc-800 rounded-lg px-3 py-2 text-sm text-black dark:text-zinc-100 
-          focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all shadow-sm dark:shadow-none
-          disabled:opacity-50 disabled:cursor-not-allowed appearance-none cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                    className="w-full flex h-10 rounded-xl border border-white/60 bg-white/40 px-3 py-2 text-sm font-medium text-slate-900 
+          focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all shadow-[0_2px_10px_rgba(0,0,0,0.02)]
+          disabled:opacity-50 disabled:cursor-not-allowed appearance-none cursor-pointer hover:bg-white/60 backdrop-blur-sm"
                 >
                     {options.map((opt) => (
                         <option key={opt.value} value={opt.value}>

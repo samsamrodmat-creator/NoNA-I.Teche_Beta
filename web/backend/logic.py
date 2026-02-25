@@ -452,50 +452,204 @@ def run_calculation(data: Dict[str, Any]) -> Dict[str, Any]:
     except Exception as e:
         return {"error": str(e)}
 
-def generate_csv_content(result: Dict[str, Any]) -> str:
+import io
+import openpyxl
+from openpyxl.chart import BarChart, PieChart, Reference
+from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+
+def generate_excel_content(result: Dict[str, Any]) -> bytes:
     """
-    Generates a CSV string from the calculation result.
-    Uses UTF-8 with BOM for Excel compatibility.
+    Generates a highly detailed, professional Excel workbook using openpyxl.
     """
-    output = io.StringIO()
-    # Write BOM for Excel to recognize UTF-8
-    output.write('\ufeff') 
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Reporte NoNA"
     
-    writer = csv.writer(output)
-    writer.writerow(["Métrica", "Valor"])
+    # 1. Disable Gridlines
+    ws.sheet_view.showGridLines = False
     
-    if "error" in result:
-        writer.writerow(["Error", result["error"]])
-        return output.getvalue()
-        
+    # Define Colors & Styles
+    BRAND_BLUE = "2563EB"
+    BRAND_SLATE = "0F172A"
+    LIGHT_GRAY = "F8FAFC"
+    MEDIUM_GRAY = "E2E8F0"
+    GREEN_ACCENT = "10B981"
+    
+    header_fill = PatternFill(start_color=BRAND_BLUE, end_color=BRAND_BLUE, fill_type="solid")
+    header_font = Font(color="FFFFFF", bold=True, size=12)
+    section_font = Font(color=BRAND_BLUE, bold=True, size=11)
+    
+    title_font = Font(color=BRAND_SLATE, bold=True, size=18)
+    subtitle_font = Font(color=BRAND_BLUE, bold=True, size=14)
+    normal_font = Font(color="475569", size=11)
+    
+    thin_border_bottom = Border(bottom=Side(style='thin', color=MEDIUM_GRAY))
+    
+    # Native Formats
+    MONEY_FORMAT = '"$"#,##0.00_-'
+    AREA_FORMAT = '#,##0.00 "m²"'
+    PCT_FORMAT = '0.00%'
+    
+    # Setup Title Header
+    ws.append(["NoNA", "I.Tech", "Reporte Financiero y Arquitectónico"])
+    ws.append(["Generado automáticamente por NoNA Platform"])
+    ws.append([])
+    
+    ws['A1'].font = title_font
+    ws['B1'].font = subtitle_font
+    ws['C1'].font = Font(color="64748B", italic=True, size=12)
+    ws['A2'].font = Font(color="94A3B8", italic=True)
+    
     metrics = result.get("metrics", {})
     raw = result.get("raw", {})
     
-    # Define the rows we want to export in order
-    rows = [
-        ("Area Terreno", metrics.get("Text_Area_Terreno")),
-        ("Valor Terreno", metrics.get("Text_Valor_Terreno")),
-        ("Costo Demolición", metrics.get("Text_Costo_Demolicion")),
-        ("---", "---"),
-        ("COS Area", f"{raw.get('cos_area', 0):.2f} m2"),
-        ("CUS Area", f"{raw.get('cus_area', 0):.2f} m2"),
-        ("CAS Area", f"{raw.get('cas_area', 0):.2f} m2"),
-        ("---", "---"),
-        ("Costos Directos", metrics.get("Text_Costos_Directos")),
-        ("Costos Indirectos", metrics.get("Text_Costos_Indirectos")),
-        ("Costo Estacionamiento", f"${raw.get('parking_cost', 0):,.2f}"),
-        ("Costo Total Construcción", metrics.get("Text_Costo_Total")),
-        ("---", "---"),
-        ("Ingreso Ventas Locales", metrics.get("Text_Ingreso_Ventas_Locales")),
-        ("Ingreso Ventas Vivienda", f"${(raw.get('area_venta_vivienda', 0) * 30000):,.2f}"), # Placeholder if specific income not in raw, but we have ingreso_inicial
-        ("Ingreso Total (Meta)", metrics.get("Text_Precio_Venta_Optimizado")),
-        ("---", "---"),
-        ("Utilidad Mínima Deseada (%)", str(raw.get('utilidadDeseada', 20.0))),
-        ("Utilidad Final", metrics.get("Text_Utilidad_Final")),
-        ("Costo por Departamento", metrics.get("Text_Costo_Por_Depto"))
-    ]
-    
-    for label, value in rows:
-        writer.writerow([label, value])
+    if "error" in result:
+        ws.append(["Error en Cálculo", result["error"]])
+        output = io.BytesIO()
+        wb.save(output)
+        return output.getvalue()
         
+    ws.append(["Métrica", "Valor"])
+    ws['A4'].fill = header_fill
+    ws['A4'].font = header_font
+    ws['B4'].fill = header_fill
+    ws['B4'].font = header_font
+    ws['A4'].alignment = Alignment(horizontal="center")
+    ws['B4'].alignment = Alignment(horizontal="center")
+    
+    current_row = 5
+    
+    def add_section(title):
+        nonlocal current_row
+        ws.append(["", ""]) # spacer
+        current_row += 1
+        
+        ws.append([title.upper(), ""])
+        for col in ['A', 'B']:
+            cell = ws[f'{col}{current_row}']
+            cell.font = section_font
+            cell.border = Border(bottom=Side(style='thick', color=BRAND_BLUE))
+        current_row += 1
+        
+    def add_row(label, val, fmt=None, highlight=False):
+        nonlocal current_row
+        ws.append([label, val if val is not None else 0])
+        
+        cell_a = ws[f'A{current_row}']
+        cell_b = ws[f'B{current_row}']
+        
+        cell_a.font = Font(bold=True, color=BRAND_SLATE if highlight else "334155")
+        cell_b.font = Font(bold=highlight, color=GREEN_ACCENT if highlight else "475569")
+        cell_b.alignment = Alignment(horizontal="right")
+        
+        # Zebra Striping
+        if current_row % 2 == 0:
+            fill = PatternFill(start_color=LIGHT_GRAY, end_color=LIGHT_GRAY, fill_type="solid")
+            cell_a.fill = fill
+            cell_b.fill = fill
+            
+        cell_a.border = thin_border_bottom
+        cell_b.border = thin_border_bottom
+        
+        if fmt:
+            cell_b.number_format = fmt
+        
+        current_row += 1
+
+    # Unpack raw values to use native numbers instead of formatted strings
+    add_section("1. Resumen Ejecutivo (KPIs)")
+    add_row("Utilidad Final Meta", raw.get("Text_Utilidad_Final_Raw", metrics.get("Text_Utilidad_Final")), fmt=PCT_FORMAT if isinstance(raw.get("Text_Utilidad_Final_Raw"), (int,float)) else None, highlight=True)
+    add_row("Precio de Venta por Vv", raw.get("precio_promedio_vivienda", 0), fmt=MONEY_FORMAT)
+    add_row("Costo Total del Proyecto", raw.get("costo_total", 0), fmt=MONEY_FORMAT)
+    add_row("Área Vendible Total", raw.get("area_venta_vivienda", 0), fmt=AREA_FORMAT)
+    add_row("Costo Cons. por Depto", raw.get("Text_Costo_Por_Depto_Raw", metrics.get("Text_Costo_Por_Depto")), fmt=MONEY_FORMAT if isinstance(raw.get("Text_Costo_Por_Depto_Raw"), (int,float)) else None)
+    
+    add_section("2. Terreno y Demolición")
+    add_row("Área del Terreno", raw.get("area_terreno", 0), fmt=AREA_FORMAT)
+    add_row("Valor Total del Terreno", raw.get("valor_terreno", 0), fmt=MONEY_FORMAT)
+    add_row("Costo Total Demolición", raw.get("costo_total_demolicion", 0), fmt=MONEY_FORMAT)
+    
+    add_section("3. Normativa y Áreas")
+    add_row("Área COS (Desplante)", raw.get("cos_area", 0), fmt=AREA_FORMAT)
+    add_row("Área CUS (Cons. Max)", raw.get("cus_area", 0), fmt=AREA_FORMAT)
+    add_row("Área CAS (Área Libre)", raw.get("cas_area", 0), fmt=AREA_FORMAT)
+    
+    add_section("4. Desglose de Costos de Construcción")
+    add_row("Total Costos Directos", raw.get("costo_directo", 0), fmt=MONEY_FORMAT)
+    add_row("Total Costos Indirectos", raw.get("costo_indirecto", 0), fmt=MONEY_FORMAT)
+    add_row("Monto de IVA Estimado", raw.get("monto_iva", 0), fmt=MONEY_FORMAT)
+    add_row("COSTO TOTAL DEL PROYECTO", raw.get("costo_total", 0), fmt=MONEY_FORMAT, highlight=True)
+    
+    add_section("5. Análisis Financiero")
+    add_row("Ingreso por Ventas (Comercio)", raw.get("ingreso_ventas_locales", 0), fmt=MONEY_FORMAT)
+    add_row("Ingreso por Ventas (Vivienda)", raw.get("ingreso_ventas_vivienda", 0), fmt=MONEY_FORMAT)
+    add_row("Ingreso Total Optimizado", raw.get("ingreso_total_optimizado", 0), fmt=MONEY_FORMAT, highlight=True)
+    add_row("Ganancia Neta", raw.get("utilidad_optimizada", 0), fmt=MONEY_FORMAT, highlight=True)
+
+    # Adjust column widths
+    ws.column_dimensions['A'].width = 42
+    ws.column_dimensions['B'].width = 28
+    
+    # ================= CHARTS =================
+    
+    # Write hidden data for charts (Cols Z, AA)
+    hide_col_z = 26
+    hide_col_aa = 27
+    
+    # Chart 1 Data: Bar Chart (General Analysis)
+    bar_data = [
+        ("Costo Total", raw.get("costo_total", 0)),
+        ("Ingreso Meta", raw.get("ingreso_total_optimizado", 0)),
+        ("Utilidad Neta", raw.get("utilidad_optimizada", 0))
+    ]
+    bar_start_row = 5
+    for i, (cat, val) in enumerate(bar_data):
+        ws.cell(row=bar_start_row+i, column=hide_col_z, value=cat)
+        ws.cell(row=bar_start_row+i, column=hide_col_aa, value=val)
+        
+    bar_chart = BarChart()
+    bar_chart.type = "col"
+    bar_chart.style = 11
+    bar_chart.title = "Balance Financiero General"
+    bar_chart.y_axis.title = "Monto (MXN)"
+    bar_chart.y_axis.number_format = '"$"#,##0'
+    
+    data_ref = Reference(ws, min_col=hide_col_aa, min_row=bar_start_row, max_row=bar_start_row+len(bar_data)-1)
+    cats_ref = Reference(ws, min_col=hide_col_z, min_row=bar_start_row, max_row=bar_start_row+len(bar_data)-1)
+    bar_chart.add_data(data_ref, titles_from_data=False)
+    bar_chart.set_categories(cats_ref)
+    bar_chart.shape = 4
+    bar_chart.width = 16
+    bar_chart.height = 8
+    ws.add_chart(bar_chart, "D5")
+
+    # Chart 2 Data: Pie Chart (Cost Structure)
+    pie_data = [
+        ("Tierra", raw.get("valor_terreno", 0)),
+        ("Construcción", raw.get("costo_directo", 0) + raw.get("parking_cost", 0)),
+        ("Indirectos e IVA", raw.get("costo_indirecto", 0) + raw.get("monto_iva", 0))
+    ]
+    pie_start_row = bar_start_row + len(bar_data) + 2
+    for i, (cat, val) in enumerate(pie_data):
+        ws.cell(row=pie_start_row+i, column=hide_col_z, value=cat)
+        ws.cell(row=pie_start_row+i, column=hide_col_aa, value=val)
+        
+    pie_chart = PieChart()
+    pie_chart.title = "Estructura de Costos del Proyecto"
+    
+    pdata_ref = Reference(ws, min_col=hide_col_aa, min_row=pie_start_row, max_row=pie_start_row+len(pie_data)-1)
+    pcats_ref = Reference(ws, min_col=hide_col_z, min_row=pie_start_row, max_row=pie_start_row+len(pie_data)-1)
+    pie_chart.add_data(pdata_ref, titles_from_data=False)
+    pie_chart.set_categories(pcats_ref)
+    pie_chart.width = 16
+    pie_chart.height = 8
+    ws.add_chart(pie_chart, "D20")
+    
+    # Hide the data columns mapping (Z, AA)
+    ws.column_dimensions[openpyxl.utils.get_column_letter(hide_col_z)].hidden = True
+    ws.column_dimensions[openpyxl.utils.get_column_letter(hide_col_aa)].hidden = True
+    
+    # Save to BytesIO
+    output = io.BytesIO()
+    wb.save(output)
     return output.getvalue()

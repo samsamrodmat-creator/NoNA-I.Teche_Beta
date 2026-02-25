@@ -8,4 +8,5 @@ export const SEGMENT_TYPES = [
 export const PARKING_TYPES = [
     { label: 'En Niveles', cost: 5500 },
     { label: 'Subterráneo', cost: 8000 },
+    { label: 'Estacionamiento Niv.O', cost: 500 },
 ];

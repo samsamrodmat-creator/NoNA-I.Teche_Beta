@@ -125,14 +125,14 @@ export async function exportCSV(data: CalculationRequest): Promise<void> {
         body: JSON.stringify(data),
     });
 
-    if (!res.ok) throw new Error('Failed to export CSV');
+    if (!res.ok) throw new Error('Failed to export Excel');
 
-    // Trigger download
+    // Trigger download of the binary blob
     const blob = await res.blob();
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `nona_calculo_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `Reporte_Financiero_NoNA_${new Date().toISOString().slice(0, 10)}.xlsx`;
     document.body.appendChild(a);
     a.click();
     window.URL.revokeObjectURL(url);

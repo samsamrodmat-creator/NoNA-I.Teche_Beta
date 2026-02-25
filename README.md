@@ -41,6 +41,17 @@ Unlike traditional static spreadsheets, NoNA offers a **dynamic, real-time envir
 - **📍 Geospatial Integration**
   - Integrated OpenStreetMap (Leaflet) for precise site selection.
 
+- **✨ Interactive Landing Page**
+  - **Particle Engine**: Custom-built high-performance particle system with interactive 2D geometric icons (Houses, Buildings, Complexes).
+  - **Visuals**:
+    - **Monochromatic Blue Palette**: Professional, trust-inspiring aesthetic.
+    - **Premium Glassmorphism**: High-fidelity frosted glass cards with gradient sheen and refined borders.
+    - **Original Branding**: Restored ultra-bold typography for strong brand identity.
+  - **Interaction**:
+    - **Smart Physics**: Particles react gently to mouse movement with a heavy, premium feel.
+    - **Immersive Zoom**: "Ingresar" button triggers an explosive "warp speed" transition effect, flying through the data city into the dashboard.
+    - **Interactive Elements**: Buttons feature distinct hover states (Solid Blue) and smooth micro-animations.
+
 - **📝 Executive Reporting**
   - One-click generation of institutional-grade Investment Teasers (PDF).
   - Automated visual stacking diagrams and massing previews.
@@ -89,30 +100,62 @@ The platform is built on a modern, type-safe, and scalable stack designed for cl
 
 ## 🏁 Getting Started / Comenzar
 
-### Installation / Instalación
+Follow these steps to run the project locally. / Sigue estos pasos para correr el proyecto localmente.
 
-1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/samsamrodmat-creator/NoNA-Beta-V_1.git
-   cd NoNA
-   ```
+### Prerequisites / Prerrequisitos
+- Node.js & npm
+- Python 3.10+
+- Git
 
-2. **Backend Setup**
-   ```bash
-   cd web/backend
-   python -m venv venv
-   source venv/bin/activate  # Windows: venv\Scripts\activate
-   pip install -r requirements.txt
-   uvicorn main:app --reload
-   ```
+### 1. Clone the Repository / Clonar el Repositorio
 
-3. **Frontend Setup**
-   ```bash
-   cd web/frontend
-   npm install
-   cp .env.example .env.local # Configure API URL
-   npm run dev
-   ```
+```bash
+git clone https://github.com/samsamrodmat-creator/NoNA-Beta-V_1.git
+cd NoNA
+```
+
+### 2. Backend Setup / Configuración del Backend
+
+The backend runs on FastAPI. / El backend corre en FastAPI.
+
+```bash
+# Navigate to backend folder / Navegar a la carpeta del backend
+cd web/backend
+
+# Create virtual environment / Crear entorno virtual
+python -m venv venv
+
+# Activate virtual environment / Activar entorno virtual
+# On macOS/Linux:
+source venv/bin/activate
+# On Windows:
+# venv\Scripts\activate
+
+# Install dependencies / Instalar dependencias
+pip install -r requirements.txt
+
+# Run the server / Correr el servidor
+uvicorn main:app --reload
+```
+
+The API will be available at `http://localhost:8000`. / La API estará disponible en `http://localhost:8000`.
+
+### 3. Frontend Setup / Configuración del Frontend
+
+The frontend is a Next.js application. / El frontend es una aplicación Next.js.
+
+```bash
+# Open a new terminal and navigate to frontend / Abrir nueva terminal y navegar al frontend
+cd web/frontend
+
+# Install dependencies / Instalar dependencias
+npm install
+
+# Run the development server / Correr servidor de desarrollo
+npm run dev
+```
+
+The app will be running at `http://localhost:3000`. / La aplicación correrá en `http://localhost:3000`.
 
 ## 📄 License / Licencia
 
