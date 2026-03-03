@@ -13,8 +13,6 @@ if not os.path.exists(frontend_dir):
 
 added_files = [
     (frontend_dir, 'out'), # Include the Next.js static export
-    (os.path.join(SPECPATH, 'nona.db'), '.'), # Include database if any default is needed
-    (os.path.join(SPECPATH, 'MATHEMATICAL_FORMULAS.md'), '.') # Any other required files
 ]
 
 a = Analysis(
