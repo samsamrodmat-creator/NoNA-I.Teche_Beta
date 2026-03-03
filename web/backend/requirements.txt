@@ -7,4 +7,3 @@ alembic
 pytest
 psycopg2-binary
 openpyxl
-pandas
