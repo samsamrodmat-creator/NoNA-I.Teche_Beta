@@ -1,0 +1,51 @@
+name: Build Windows Executable
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install Frontend Dependencies
+      working-directory: ./web/frontend
+      run: npm install --legacy-peer-deps
+
+    - name: Build Frontend
+      working-directory: ./web/frontend
+      run: npm run build
+
+    - name: Install Backend Dependencies
+      working-directory: ./web/backend
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pyinstaller uvicorn anyio starlette
+        
+    - name: Build Executable with PyInstaller
+      working-directory: ./web/backend
+      run: pyinstaller nona.spec
+
+    - name: Upload Executable
+      uses: actions/upload-artifact@v4
+      with:
+        name: NoNA-Windows-Executable
+        path: web/backend/dist/NoNA.exe
+        retention-days: 7

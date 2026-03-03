@@ -3,9 +3,12 @@ from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 import logic
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 import database
+import os
+import sys
 
 # Initialize Database
 database.init_db()
@@ -202,3 +205,37 @@ def create_scenario(scenario: ScenarioCreate, db: Session = Depends(get_db)):
 @app.get("/customers/{customer_id}/scenarios", response_model=List[ScenarioOut])
 def get_scenarios(customer_id: int, db: Session = Depends(get_db)):
     return db.query(database.Scenario).filter(database.Scenario.customer_id == customer_id).all()
+
+# --- Serve Static Frontend (for PyInstaller/Executable) ---
+# Check if we are running in a PyInstaller bundle
+if getattr(sys, 'frozen', False):
+    # If the application is run as a bundle, the PyInstaller bootloader
+    # extends the sys module by a flag frozen=True and sets the app 
+    # path into variable _MEIPASS'.
+    frontend_build_dir = os.path.join(sys._MEIPASS, "out")
+else:
+    # Development mode path
+    frontend_build_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "frontend", "out")
+
+if os.path.exists(frontend_build_dir):
+    app.mount("/_next", StaticFiles(directory=os.path.join(frontend_build_dir, "_next")), name="next_static")
+    
+    # Serve other static files (like images, favicon, etc in public dir of nextjs build)
+    for item in os.listdir(frontend_build_dir):
+        item_path = os.path.join(frontend_build_dir, item)
+        if os.path.isdir(item_path) and item != "_next":
+            app.mount(f"/{item}", StaticFiles(directory=item_path), name=f"static_{item}")
+
+    @app.get("/{full_path:path}")
+    async def serve_frontend(full_path: str):
+        # Serve index.html for root or unknown paths (let React Router/Next.js handle it)
+        file_path = os.path.join(frontend_build_dir, full_path)
+        if os.path.isfile(file_path):
+            return FileResponse(file_path)
+        
+        # fallback to index.html for Next.js App Router static export routing
+        html_path = os.path.join(frontend_build_dir, full_path + ".html")
+        if os.path.isfile(html_path):
+            return FileResponse(html_path)
+            
+        return FileResponse(os.path.join(frontend_build_dir, "index.html"))
