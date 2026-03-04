@@ -47,13 +47,10 @@ export function useCalculator() {
         }
     }, []);
 
-    // Debounced Effect
+    // Initial calculation on mount
     useEffect(() => {
-        const timer = setTimeout(() => {
-            calculate(data);
-        }, 800);
-        return () => clearTimeout(timer);
-    }, [data, calculate]);
+        calculate(DEFAULT_DATA);
+    }, [calculate]);
 
     const handleChange = (field: keyof CalculationRequest, value: any) => {
         setData(prev => ({ ...prev, [field]: value }));
@@ -65,6 +62,7 @@ export function useCalculator() {
         loading,
         error,
         handleChange,
-        setData // Exposed for scenario loading
+        setData, // Exposed for scenario loading
+        calculate
     };
 }

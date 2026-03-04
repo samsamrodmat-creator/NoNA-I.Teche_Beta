@@ -16,19 +16,19 @@ export default function LandingPage() {
     const router = useRouter();
     const [isZooming, setIsZooming] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [showScroll, setShowScroll] = useState(true);
+    const [showScroll, setShowScroll] = useState(false);
 
-    useEffect(() => {
-        const handleScroll = () => {
-            if (window.scrollY > 50) {
-                setShowScroll(false);
-            } else {
-                setShowScroll(true);
-            }
-        };
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+    // useEffect(() => {
+    //     const handleScroll = () => {
+    //         if (window.scrollY > 50) {
+    //             setShowScroll(false);
+    //         } else {
+    //             setShowScroll(true);
+    //         }
+    //     };
+    //     window.addEventListener('scroll', handleScroll, { passive: true });
+    //     return () => window.removeEventListener('scroll', handleScroll);
+    // }, []);
 
     const handleEnter = () => {
         setIsLoading(true);

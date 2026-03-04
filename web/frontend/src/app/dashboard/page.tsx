@@ -52,7 +52,7 @@ const VisualPlanner = dynamic(() => import('@/components/VisualPlanner').then(mo
 });
 
 export default function Home() {
-  const { data, results, error: calcError, handleChange, setData } = useCalculator();
+  const { data, results, error: calcError, handleChange, setData, calculate, loading } = useCalculator();
 
   // UI State
   const [showSettings, setShowSettings] = useState(false);
@@ -279,14 +279,25 @@ export default function Home() {
                   )}
                 </div>
 
-                {/* Visual Planner Button */}
-                <button
-                  onClick={() => setShowVisualPlanner(true)}
-                  className="w-full mt-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white py-2 px-4 rounded-lg text-sm font-bold shadow-lg flex items-center justify-center gap-2 transition-all"
-                >
-                  <LayoutDashboard className="w-4 h-4" />
-                  Planificador Visual
-                </button>
+                {/* Action Buttons */}
+                <div className="flex flex-col gap-2 mt-4">
+                  <button
+                    onClick={() => calculate(data)}
+                    disabled={loading}
+                    className={`w-full py-2 px-4 rounded-lg text-sm font-bold shadow-lg flex items-center justify-center gap-2 transition-all ${loading ? 'bg-emerald-600/50 cursor-not-allowed text-white/70' : 'bg-emerald-600 hover:bg-emerald-500 text-white'}`}
+                  >
+                    <Calculator className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                    {loading ? 'Calculando...' : 'Calcular'}
+                  </button>
+
+                  <button
+                    onClick={() => setShowVisualPlanner(true)}
+                    className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white py-2 px-4 rounded-lg text-sm font-bold shadow-lg flex items-center justify-center gap-2 transition-all"
+                  >
+                    <LayoutDashboard className="w-4 h-4" />
+                    Generar Zonificación
+                  </button>
+                </div>
 
               </div>
             </section>

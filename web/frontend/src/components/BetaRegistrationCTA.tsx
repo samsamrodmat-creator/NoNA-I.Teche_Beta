@@ -142,9 +142,13 @@ export default function BetaRegistrationCTA() {
                 {/* Header text */}
                 <div className="space-y-6">
                     <motion.div
+                        /*
+                        Explicación: Badge de 'Lanzamiento Oficial' que flotaba hacia arriba (y: 10 a 0) 
+                        cuando la última sección entraba en el campo de visión.
                         initial={{ opacity: 0, y: 10 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
+                        */
                         className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50/50 border border-blue-200 text-[10px] font-bold text-blue-600 tracking-[0.3em] uppercase mb-4 backdrop-blur-sm"
                     >
                         <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.6)]"></span>
@@ -152,9 +156,12 @@ export default function BetaRegistrationCTA() {
                     </motion.div>
 
                     <motion.h2
+                        /*
+                        Explicación: Título final CTA "¿Listo para empezar...?" en Pop In con retraso de 0.1s.
                         initial={{ opacity: 0, scale: 0.95 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
+                        */
                         transition={{ delay: 0.1 }}
                         className="text-4xl md:text-6xl font-black tracking-tighter text-slate-900 leading-tight drop-shadow-sm"
                     >
@@ -163,9 +170,13 @@ export default function BetaRegistrationCTA() {
                     </motion.h2>
 
                     <motion.p
+                        /*
+                        Explicación: Párrafo de texto secundario que revelaba su opacidad después de 0.2s 
+                        de hacer scroll hasta esta sección.
                         initial={{ opacity: 0 }}
                         whileInView={{ opacity: 1 }}
                         viewport={{ once: true }}
+                        */
                         transition={{ delay: 0.2 }}
                         className="text-slate-500 max-w-2xl mx-auto text-sm md:text-base leading-relaxed"
                     >
@@ -176,9 +187,13 @@ export default function BetaRegistrationCTA() {
 
                 {/* Countdown */}
                 <motion.div
+                    /*
+                    Explicación: Deslizaba el contador regresivo de tiempo entero (y: 20 a 0) 
+                    tras un retraso de 0.3s desde que cargaba el bloque en scroll.
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
+                    */
                     transition={{ delay: 0.3 }}
                     className="w-full flex justify-center py-6"
                 >
@@ -187,9 +202,13 @@ export default function BetaRegistrationCTA() {
 
                 {/* Call To Action Button */}
                 <motion.div
+                    /*
+                    Explicación: "Call To Action" central de 'Regístrate para la Beta'. 
+                    Hacía pop de 0.9 a 1 en escala, para invitar a la acción en el último momento.
                     initial={{ opacity: 0, scale: 0.9 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
+                    */
                     transition={{ delay: 0.5 }}
                     className="relative"
                 >

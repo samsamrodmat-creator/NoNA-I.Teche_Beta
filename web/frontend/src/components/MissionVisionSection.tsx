@@ -21,9 +21,12 @@ export default function MissionVisionSection() {
 
                     {/* Left Column: Heading */}
                     <motion.div
+                        /*
+                        Explicación: Animación que deslizaba el texto desde la izquierda (x: -30 a 0) al entrar en pantalla.
                         initial={{ opacity: 0, x: -30 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
+                        */
                         transition={{ duration: 0.6 }}
                         className="flex-1 space-y-6"
                     >
@@ -40,9 +43,12 @@ export default function MissionVisionSection() {
 
                     {/* Right Column: Text & Question */}
                     <motion.div
+                        /*
+                        Explicación: Animación que deslizaba el texto desde la derecha (x: 30 a 0) al acercarse con scroll.
                         initial={{ opacity: 0, x: 30 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
+                        */
                         transition={{ duration: 0.6, delay: 0.2 }}
                         className="flex-1 flex flex-col justify-center space-y-6"
                     >
@@ -66,9 +72,12 @@ export default function MissionVisionSection() {
 
                     {/* Mission Card */}
                     <motion.div
+                        /*
+                        Explicación: Deslizaba la tarjeta de Misión desde la izquierda al hacer scroll hacia abajo.
                         initial={{ opacity: 0, x: -30 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
+                        */
                         transition={{ duration: 0.5, delay: 0.2 }}
                         className="bg-white rounded-[2.5rem] p-10 md:p-12 border border-slate-200 shadow-[0_10px_40px_rgba(0,0,0,0.04)] hover:shadow-xl hover:border-blue-200 transition-all duration-500 group relative overflow-hidden"
                     >
@@ -113,9 +122,12 @@ export default function MissionVisionSection() {
 
                     {/* Vision Card */}
                     <motion.div
+                        /*
+                        Explicación: Deslizaba la tarjeta de Visión desde la derecha de forma retardada (stagger/delay).
                         initial={{ opacity: 0, x: 30 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
+                        */
                         transition={{ duration: 0.5, delay: 0.4 }}
                         className="bg-slate-900 rounded-[2.5rem] p-10 md:p-12 border border-slate-800 shadow-2xl hover:border-blue-500/50 transition-all duration-500 group relative overflow-hidden text-white"
                     >

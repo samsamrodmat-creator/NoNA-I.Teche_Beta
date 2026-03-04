@@ -37,25 +37,34 @@ export default function PricingSection() {
                 {/* Header */}
                 <div className="flex flex-col items-center text-center space-y-6">
                     <motion.span
+                        /*
+                        Explicación: Fade In hacia arriba del header (y: 10 a 0) al encontrar el final del scroll.
                         initial={{ opacity: 0, y: 10 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
+                        */
                         className="text-[10px] font-bold text-blue-600 tracking-[0.4em] uppercase"
                     >
                         Planes y Precios
                     </motion.span>
                     <motion.h2
+                        /*
+                        Explicación: Pop In (escala 0.95 a 1) para el título de precios al hacerse visible.
                         initial={{ opacity: 0, scale: 0.95 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
+                        */
                         className="text-3xl md:text-5xl font-black tracking-tighter text-slate-900 leading-tight max-w-3xl"
                     >
                         Encuentra el modelo ideal para tu <span className="text-blue-600">flujo de trabajo</span>
                     </motion.h2>
                     <motion.p
+                        /*
+                        Explicación: Simple aumento de opacidad para el subtítulo cuando el padre era visible.
                         initial={{ opacity: 0 }}
                         whileInView={{ opacity: 1 }}
                         viewport={{ once: true }}
+                        */
                         transition={{ delay: 0.2 }}
                         className="text-slate-500 max-w-2xl text-sm md:text-base"
                     >
@@ -65,10 +74,14 @@ export default function PricingSection() {
 
                 {/* PRICING CARDS */}
                 <motion.div
+                    /*
+                    Explicación: Activador padre que encadenaba (stagger) las animaciones de todas las tarjetas hijas 
+                    al pasar por encima de la sección 'Pricing'.
                     variants={containerVariants}
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true }}
+                    */
                     className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 xl:gap-8 w-full"
                 >
                     {/* PLAN GRANUITO */}

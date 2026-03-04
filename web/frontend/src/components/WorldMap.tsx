@@ -36,14 +36,24 @@ export default function WorldMap() {
     const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
     const [cityPositions, setCityPositions] = useState<{ x: number, y: number, name: string }[]>([]);
 
-    const { scrollYProgress } = useScroll({
-        target: containerRef,
-        offset: ["start end", "end start"]
-    });
+    /* 
+    Explicación: Este hook (useScroll) calculaba el progreso del scroll en relación con el contenedor.
+    Los hooks useTransform usaban ese progreso para hacer un efecto de "Zoom out" (escalando de 1.3 a 1)
+    y un efecto de aparición (opacidad de 0 a 1) a medida que el usuario hacía scroll.
+    Se desactivan para mejorar el rendimiento de la página, dejando valores fijos.
+    */
+    // const { scrollYProgress } = useScroll({
+    //     target: containerRef,
+    //     offset: ["start end", "end start"]
+    // });
 
     // Zoom out effect
-    const scale = useTransform(scrollYProgress, [0, 0.4], [1.3, 1]);
-    const opacity = useTransform(scrollYProgress, [0, 0.2], [0, 1]);
+    // const scale = useTransform(scrollYProgress, [0, 0.4], [1.3, 1]);
+    // const opacity = useTransform(scrollYProgress, [0, 0.2], [0, 1]);
+
+    // Valores fijos para mantener el mapa visible y en tamaño normal
+    const scale = 1;
+    const opacity = 1;
 
     // Handle Resize
     useEffect(() => {
@@ -176,9 +186,13 @@ export default function WorldMap() {
 
                     {/* Header */}
                     <motion.div
+                        /* 
+                        Explicación: Animación que deslizaba el texto desde la izquierda (x: -50) al centro (x: 0)
+                        y aumentaba la opacidad (de 0 a 1) justo al entrar en la pantalla (whileInView).
                         initial={{ opacity: 0, x: -50 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
+                        */
                         transition={{ duration: 0.8 }}
                         className="space-y-4"
                     >
@@ -200,8 +214,11 @@ export default function WorldMap() {
                     {/* Regions List */}
                     <motion.div
                         className="space-y-4"
+                        /* 
+                        Explicación: Animación de Fade in progresivo, apareciendo cuando se hacía scroll.
                         initial={{ opacity: 0 }}
                         whileInView={{ opacity: 1 }}
+                        */
                         transition={{ delay: 0.3, duration: 0.8 }}
                     >
                         {REGIONS.map((region) => (

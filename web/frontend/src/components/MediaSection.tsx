@@ -19,9 +19,13 @@ export default function MediaSection() {
                 {/* Section Header */}
                 <div className="flex flex-col items-center text-center space-y-4">
                     <motion.div
+                        /*
+                        Explicación: Botón flotante 'Apariciones en Prensa' que emergía con scroll. 
+                        Sensible a IntersectionObserver.
                         initial={{ opacity: 0, y: 10 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
+                        */
                         className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-slate-600 text-xs font-bold tracking-[0.2em] uppercase"
                     >
                         <Newspaper className="w-4 h-4" />
@@ -29,9 +33,13 @@ export default function MediaSection() {
                     </motion.div>
 
                     <motion.h2
+                        /*
+                        Explicación: Efecto visual de Pop-in suave (escala 0.95 -> 1) 
+                        para el título 'NoNA en los Medios' al bajar por la página.
                         initial={{ opacity: 0, scale: 0.95 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
+                        */
                         className="text-4xl md:text-5xl font-black tracking-tight text-slate-900 leading-none max-w-2xl"
                     >
                         NoNA en los Medios
@@ -40,9 +48,13 @@ export default function MediaSection() {
 
                 {/* Newspaper Article Card (Glassmorphism Bento) */}
                 <motion.div
+                    /*
+                    Explicación: Elevaba y aparecía toda la tarjeta principal del periódico 
+                    conforme el scroll la revelaba (y: 30 a 0).
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
+                    */
                     transition={{ duration: 0.6 }}
                     className="w-full bg-white rounded-[2.5rem] border border-slate-200 shadow-[0_20px_50px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col lg:flex-row group"
                 >

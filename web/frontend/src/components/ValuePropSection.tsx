@@ -8,7 +8,12 @@ import { useEffect, useRef } from "react";
 
 function Counter({ value, suffix = "", prefix = "" }: { value: number, suffix?: string, prefix?: string }) {
     const ref = useRef(null);
-    const isInView = useInView(ref, { once: true });
+    /* 
+    Explicación: useInView detectaba cuando el contador entraba en la pantalla al hacer scroll
+    para iniciar la animación de los números. Para mejorar el performance, fijamos el valor a true.
+    */
+    // const isInView = useInView(ref, { once: true });
+    const isInView = true;
     const motionValue = useMotionValue(0);
     const springValue = useSpring(motionValue, { damping: 30, stiffness: 100 });
     const formatted = useTransform(springValue, (latest) => `${prefix}${Math.round(latest)}${suffix}`);
@@ -77,10 +82,14 @@ export default function ValuePropSection() {
 
                 {/* BENTO GRID LAYOUT */}
                 <motion.div
+                    /* 
+                    Explicación: Animaba en secuencia de cascada (stagger) todos los cuadros de valor
+                    una vez que el contenedor se asomaba en pantalla al scrollear.
                     variants={containerVariants}
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true }}
+                    */
                     className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full"
                 >
 
@@ -183,9 +192,13 @@ export default function ValuePropSection() {
 
                         {/* RADIAL 1: TIME */}
                         <motion.div
+                            /* 
+                            Explicación: Animación del gráfico radial que hacía un "pop" (escala 0.8 a 1) y 
+                            un "Fade In" cuando el usuario bajaba el scroll.
                             initial={{ opacity: 0, scale: 0.8 }}
                             whileInView={{ opacity: 1, scale: 1 }}
                             viewport={{ once: true }}
+                            */
                             transition={{ duration: 0.5 }}
                             className="relative flex flex-col items-center group lg:scale-100"
                         >
@@ -202,9 +215,15 @@ export default function ValuePropSection() {
                                         cx="128" cy="128" r="120"
                                         stroke="#3b82f6" strokeWidth="12" fill="transparent"
                                         strokeLinecap="round"
+                                        /*
+                                        Explicación: Animaba el borde del círculo (Dashoffset) para dar la ilusión 
+                                        de que la gráfica se iba llenando al entrar en pantalla.
                                         initial={{ strokeDasharray: "753.98 753.98", strokeDashoffset: 753.98 }}
                                         whileInView={{ strokeDashoffset: 753.98 - (753.98 * 0.05) }} // 5% fill
                                         viewport={{ once: true }}
+                                        */
+                                        strokeDasharray="753.98 753.98"
+                                        strokeDashoffset={753.98 - (753.98 * 0.05)}
                                         transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 }}
                                     />
                                 </svg>
@@ -227,9 +246,13 @@ export default function ValuePropSection() {
 
                         {/* RADIAL 2: COST */}
                         <motion.div
+                            /* 
+                            Explicación: Al igual que el gráfico anterior, este efecto del Radial 2 
+                            se activaba al hacer scroll, haciendo pop (escala) y opacidad progresiva.
                             initial={{ opacity: 0, scale: 0.8 }}
                             whileInView={{ opacity: 1, scale: 1 }}
                             viewport={{ once: true }}
+                            */
                             transition={{ duration: 0.5, delay: 0.2 }}
                             className="relative flex flex-col items-center group lg:scale-100"
                         >
@@ -246,9 +269,15 @@ export default function ValuePropSection() {
                                         cx="128" cy="128" r="120"
                                         stroke="#0ea5e9" strokeWidth="12" fill="transparent"
                                         strokeLinecap="round"
+                                        /*
+                                        Explicación: Animación del progreso circular de la segunda gráfica
+                                        al alcanzar el viewport.
                                         initial={{ strokeDasharray: "753.98 753.98", strokeDashoffset: 753.98 }}
                                         whileInView={{ strokeDashoffset: 753.98 - (753.98 * 0.30) }} // 30% fill
                                         viewport={{ once: true }}
+                                        */
+                                        strokeDasharray="753.98 753.98"
+                                        strokeDashoffset={753.98 - (753.98 * 0.30)}
                                         transition={{ duration: 1.5, ease: "easeOut", delay: 0.4 }}
                                     />
                                 </svg>
@@ -271,9 +300,12 @@ export default function ValuePropSection() {
 
                         {/* RADIAL 3: VERSATILITY */}
                         <motion.div
+                            /* 
+                            Explicación: Animación del Radial 3 de "Versatilidad" en entrada de scroll.
                             initial={{ opacity: 0, scale: 0.8 }}
                             whileInView={{ opacity: 1, scale: 1 }}
                             viewport={{ once: true }}
+                            */
                             transition={{ duration: 0.5, delay: 0.4 }}
                             className="relative flex flex-col items-center group lg:scale-100"
                         >
@@ -298,9 +330,15 @@ export default function ValuePropSection() {
                                         cx="128" cy="128" r="120"
                                         stroke="url(#blueGradient)" strokeWidth="12" fill="transparent"
                                         strokeLinecap="round"
+                                        /*
+                                        Explicación: Drenaje circular del Radial 3 (Versatilidad) 
+                                        activado por visibilidad.
                                         initial={{ strokeDasharray: "753.98 753.98", strokeDashoffset: 753.98 }}
                                         whileInView={{ strokeDashoffset: 0 }} // 100% full
                                         viewport={{ once: true }}
+                                        */
+                                        strokeDasharray="753.98 753.98"
+                                        strokeDashoffset={0}
                                         transition={{ duration: 2, ease: "easeInOut", delay: 0.6 }}
                                     />
                                 </svg>
@@ -308,8 +346,12 @@ export default function ValuePropSection() {
                                 {/* Center Text */}
                                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                                     <motion.span
+                                        /*
+                                        Explicación: Animación pop para el símbolo infinito (∞). 
+                                        Escalaba de 0 a 1 rebotando suavemente.
                                         initial={{ opacity: 0, scale: 0 }}
                                         whileInView={{ opacity: 1, scale: 1 }}
+                                        */
                                         transition={{ delay: 1.5, type: "spring" }}
                                         className="text-6xl font-black text-slate-900 pb-2 bg-gradient-to-br from-slate-900 to-blue-900 bg-clip-text text-transparent"
                                     >
