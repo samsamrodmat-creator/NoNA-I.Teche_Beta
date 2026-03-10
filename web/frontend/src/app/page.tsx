@@ -8,7 +8,7 @@ import ValuePropSection from "@/components/ValuePropSection";
 import MissionVisionSection from "@/components/MissionVisionSection";
 import MediaSection from "@/components/MediaSection";
 import AcknowledgmentsSection from "@/components/AcknowledgmentsSection";
-import BetaRegistrationCTA, { CountdownTimer } from "@/components/BetaRegistrationCTA";
+import BetaRegistrationCTA from "@/components/BetaRegistrationCTA";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
@@ -83,17 +83,17 @@ export default function LandingPage() {
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="flex flex-col md:flex-row items-center justify-center gap-4 pb-4 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-500 fill-mode-forwards relative z-20">
+                        <div className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-4 pb-4 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-500 fill-mode-forwards relative z-20 w-full max-w-4xl mx-auto flex-wrap">
                             {/* Ingresar Button */}
                             <button
                                 onClick={handleEnter}
                                 disabled={isLoading}
-                                className="relative inline-flex items-center justify-center px-10 py-3.5 text-[11px] uppercase tracking-[0.25em] font-black text-slate-900 transition-all duration-300 
+                                className="relative inline-flex items-center justify-center px-8 py-3.5 text-[10px] sm:text-[11px] uppercase tracking-[0.2em] sm:tracking-[0.25em] font-black text-slate-900 transition-all duration-300 
                                 bg-white/80 rounded-full hover:bg-white 
-                                shadow-[0_0_20px_rgba(255,255,255,0.4)] hover:shadow-[0_0_30px_rgba(255,255,255,0.8)] hover:-translate-y-1 group overflow-hidden border border-slate-200"
+                                shadow-[0_0_20px_rgba(255,255,255,0.4)] hover:shadow-[0_0_30px_rgba(255,255,255,0.8)] hover:-translate-y-1 group overflow-hidden border border-slate-200 flex-1 min-w-[220px] max-w-[280px]"
                             >
                                 <span className="relative z-10 flex items-center">
-                                    {isLoading ? 'Iniciando...' : 'Ingresar'}
+                                    {isLoading ? 'Iniciando...' : 'Accesar'}
                                     {!isLoading && (
                                         <svg className="w-3.5 h-3.5 ml-2 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -102,33 +102,40 @@ export default function LandingPage() {
                                 </span>
                             </button>
 
+                            {/* Normativa DB Button (Glassy Secondary) */}
+                            <a
+                                href="/normativa"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="relative inline-flex items-center justify-center px-8 py-3.5 text-[10px] sm:text-[11px] uppercase tracking-[0.2em] sm:tracking-[0.25em] font-black text-indigo-900 transition-all duration-300 
+                                bg-indigo-50/60 backdrop-blur-sm rounded-full hover:bg-indigo-100/80 
+                                shadow-[0_4px_15px_rgba(79,70,229,0.1)] hover:shadow-[0_8px_25px_rgba(79,70,229,0.2)] hover:-translate-y-1 group border border-indigo-200/50 flex-1 min-w-[220px] max-w-[280px]"
+                            >
+                                <span className="relative z-10 flex items-center gap-2">
+                                    <svg className="w-4 h-4 text-indigo-600 transition-transform duration-300 group-hover:rotate-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+                                    </svg>
+                                    Base de datos
+                                </span>
+                            </a>
+
                             {/* Beta Registration Button */}
                             <a
                                 href="https://docs.google.com/forms/d/e/1FAIpQLSdRXd7yhatKbHssyLMBQguBcIS4OCX1wW_XmotKx-yBUbL2AQ/viewform?usp=sf_link"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="relative inline-flex items-center justify-center px-10 py-3.5 text-[11px] uppercase tracking-[0.25em] font-black text-white transition-all duration-300 
+                                className="relative inline-flex items-center justify-center px-8 py-3.5 text-[10px] sm:text-[11px] uppercase tracking-[0.2em] sm:tracking-[0.25em] font-black text-white transition-all duration-300 
                                 bg-gradient-to-r from-blue-600 to-blue-500 rounded-full hover:from-blue-500 hover:to-sky-400 
-                                shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:shadow-[0_0_30px_rgba(56,189,248,0.6)] hover:-translate-y-1 group overflow-hidden"
+                                shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:shadow-[0_0_30px_rgba(56,189,248,0.6)] hover:-translate-y-1 group overflow-hidden flex-1 min-w-[220px] max-w-[280px]"
                             >
                                 <span className="relative z-10 flex items-center">
-                                    Regístrate para la Beta
+                                    Regístrate Beta
                                 </span>
                                 {/* Highlight overlay effect */}
                                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 rounded-full"></div>
                                 {/* Subtle pulse border */}
                                 <div className="absolute inset-0 rounded-full border border-blue-400/50 group-hover:border-white/50 animate-pulse"></div>
                             </a>
-                        </div>
-
-                        {/* Countdown to Launch */}
-                        <div className="w-full">
-                            <div className="flex items-center justify-center gap-4 mb-2">
-                                <div className="h-px bg-slate-200 flex-grow max-w-[50px]"></div>
-                                <span className="text-[10px] font-bold text-blue-600 tracking-[0.3em] uppercase">Lanzamiento Oficial</span>
-                                <div className="h-px bg-slate-200 flex-grow max-w-[50px]"></div>
-                            </div>
-                            <CountdownTimer />
                         </div>
 
 
