@@ -81,7 +81,6 @@ export default function NormativaMenuPage() {
                 {/* City Cards Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
 
-                    {/* CDMX Card */}
                     <CityCard
                         id="cdmx"
                         title="Ciudad de México"
@@ -92,9 +91,9 @@ export default function NormativaMenuPage() {
                         bgGradient="from-pink-600/20 to-rose-600/5"
                         borderColor="hover:border-pink-500/50"
                         glowColor="group-hover:shadow-[0_0_30px_rgba(219,39,119,0.3)]"
+                        mapImage="/images/maps/cdmx_dots.svg"
                     />
 
-                    {/* Monterrey Card */}
                     <CityCard
                         id="mty"
                         title="Monterrey"
@@ -105,9 +104,9 @@ export default function NormativaMenuPage() {
                         bgGradient="from-blue-600/10 to-sky-600/5"
                         borderColor="hover:border-blue-400/80 border-blue-500/30" // Highlighted border initially
                         glowColor="group-hover:shadow-[0_10px_40px_rgba(59,130,246,0.2)] shadow-[0_10px_30px_rgba(59,130,246,0.1)]"
+                        mapImage="/images/maps/mty_dots.svg"
                     />
 
-                    {/* Guadalajara Card */}
                     <CityCard
                         id="gdl"
                         title="Guadalajara"
@@ -118,6 +117,7 @@ export default function NormativaMenuPage() {
                         bgGradient="from-amber-600/10 to-orange-600/5"
                         borderColor="hover:border-amber-400/80 border-slate-200"
                         glowColor="group-hover:shadow-[0_10px_40px_rgba(245,158,11,0.2)] shadow-[0_10px_30px_rgba(245,158,11,0.05)]"
+                        mapImage="/images/maps/gdl_dots.svg"
                     />
                 </div>
 
@@ -202,7 +202,8 @@ function CityCard({
     onClick,
     bgGradient,
     borderColor,
-    glowColor
+    glowColor,
+    mapImage
 }: {
     id: string,
     title: string,
@@ -212,7 +213,8 @@ function CityCard({
     onClick: () => void,
     bgGradient: string,
     borderColor: string,
-    glowColor: string
+    glowColor: string,
+    mapImage: string
 }) {
     return (
         <button
@@ -220,8 +222,19 @@ function CityCard({
             disabled={isLoading}
             className={`group relative w-full text-left p-8 rounded-[2rem] border bg-white/60 backdrop-blur-xl overflow-hidden transition-all duration-500 ease-out hover:-translate-y-2 focus:outline-none ${borderColor} ${glowColor} shadow-xl shadow-slate-200/50`}
         >
+            {/* Map Background Layer */}
+            <div
+                className="absolute inset-0 z-0 opacity-40 group-hover:opacity-70 transition-opacity duration-700 pointer-events-none mix-blend-multiply"
+                style={{
+                    backgroundImage: `url(${mapImage})`,
+                    backgroundSize: '160%',
+                    backgroundPosition: 'center 40%',
+                    backgroundRepeat: 'no-repeat',
+                }}
+            ></div>
+
             {/* Hover Gradient Overlay */}
-            <div className={`absolute inset-0 bg-gradient-to-br ${bgGradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
+            <div className={`absolute inset-0 z-10 bg-gradient-to-br ${bgGradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`}></div>
 
             {/* Loading Spinner Overlay */}
             <div className={`absolute inset-0 z-20 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm transition-opacity duration-300 ${isLoading ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
@@ -229,7 +242,7 @@ function CityCard({
                 <span className="text-xs font-medium text-blue-600 uppercase tracking-widest animate-pulse">Cargando...</span>
             </div>
 
-            <div className="relative z-10 flex flex-col h-full min-h-[180px]">
+            <div className="relative z-30 flex flex-col h-full min-h-[180px]">
                 <div className="flex justify-between items-start mb-auto">
                     {/* Status Badge */}
                     <div className="inline-flex">
