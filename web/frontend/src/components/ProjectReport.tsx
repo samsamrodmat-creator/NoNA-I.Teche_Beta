@@ -31,7 +31,7 @@ export function ProjectReport({ data, results, costStructure }: ProjectReportPro
     const totalStructureCost = structure.reduce((acc: number, item: any) => acc + item.value, 0);
 
     return (
-        <div id="project-report" className="w-[1240px] bg-white text-zinc-900 p-16 font-mono text-sm hidden">
+        <div id="project-report" className="w-[1240px] bg-white text-zinc-900 p-16 text-sm hidden" style={{ fontFamily: '"Avenir Next", Avenir, sans-serif' }}>
 
             {/* 0. HEADER */}
             <div className="border-b-2 border-black pb-6 mb-8 flex justify-between items-end">
@@ -144,7 +144,7 @@ export function ProjectReport({ data, results, costStructure }: ProjectReportPro
                             </div>
                             <div className="flex justify-between items-center text-sm">
                                 <span>ROI</span>
-                                <span className="font-mono">{stats.Text_ROI}</span>
+                                <span className="font-bold">{stats.Text_ROI}</span>
                             </div>
                         </div>
                     </Section>
@@ -188,7 +188,7 @@ function Row({ label, value, sub, bold, highlight }: any) {
     return (
         <div className={`flex justify-between items-baseline ${sub ? 'pl-4 text-xs text-zinc-500' : 'text-sm'} ${highlight ? 'bg-zinc-100 px-2 py-1 -mx-2 rounded' : ''}`}>
             <span className={`${bold ? 'font-bold text-black' : ''}`}>{label}</span>
-            <span className={`font-mono ${bold ? 'font-bold' : ''}`}>{value || "-"}</span>
+            <span className={`${bold ? 'font-bold' : ''}`}>{value || "-"}</span>
         </div>
     )
 }

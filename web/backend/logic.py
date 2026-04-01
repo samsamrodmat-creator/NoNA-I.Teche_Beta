@@ -269,8 +269,8 @@ def run_calculation(data: Dict[str, Any]) -> Dict[str, Any]:
         base_construction = reg['cus_area'] * costoMetroConstruccion
         costos_directos = base_construction + dem_cost
         
-        area_com_est = mix['area_comercio'] + park['area']
-        area_venta = reg['cus_area'] - area_com_est
+        # Parking area usually does not consume CUS, but circulation does.
+        area_venta = reg['cus_area'] - mix['area_comercio'] - area_circulacion
         
         ingreso_vivienda = area_venta * Costo_de_venta_m2
         ingreso_bruto_inicial = ingreso_vivienda + mix['ingreso_total']
@@ -312,7 +312,12 @@ def run_calculation(data: Dict[str, Any]) -> Dict[str, Any]:
             )
             
         # New Metric: Cost per Apartment
-        costo_por_departamento = costo_total_construccion / n_viviendas if n_viviendas > 0 else 0.0
+        # Pro-rata total project cost based on residential vs commercial saleable area
+        total_saleable = area_venta + mix['area_comercio']
+        residential_cost_fraction = (area_venta / total_saleable) if total_saleable > 0 else 1.0
+        costo_vivienda_total = costo_total_construccion * residential_cost_fraction
+        
+        costo_por_departamento = costo_vivienda_total / n_viviendas if n_viviendas > 0 else 0.0
 
         return {
             "metrics": {

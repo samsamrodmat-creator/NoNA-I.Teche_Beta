@@ -317,6 +317,22 @@ export default function Home() {
                   value={data.valor_terreno}
                   onChange={e => handleChange('valor_terreno', parseFloat(e.target.value))}
                 />
+                
+                <div className="flex items-center gap-2 py-2">
+                  <input type="checkbox" checked={data.demolicion || false} onChange={e => handleChange('demolicion', e.target.checked)} className="accent-indigo-600 w-4 h-4 rounded border-black/50 dark:border-zinc-700 bg-white dark:bg-zinc-900" />
+                  <label className="text-sm text-black dark:text-zinc-300 select-none">Requiere Demolición</label>
+                </div>
+
+                {data.demolicion && (
+                  <div className="pl-4 border-l-2 border-zinc-200 dark:border-zinc-800 space-y-3">
+                    <InputField
+                      label="Área a Demoler (m²)"
+                      type="number"
+                      value={data.area_demolicion || 0}
+                      onChange={e => handleChange('area_demolicion', parseFloat(e.target.value))}
+                    />
+                  </div>
+                )}
               </div>
             </section>
 

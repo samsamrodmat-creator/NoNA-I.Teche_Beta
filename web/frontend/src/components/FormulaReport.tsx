@@ -30,7 +30,7 @@ export function FormulaReport({ data, results }: FormulaReportProps) {
     const targetIncome = results?.raw?.ingreso_optimizado || 0;
 
     return (
-        <div id="formula-report" className="w-[800px] bg-white text-zinc-900 p-12 font-serif hidden">
+        <div id="formula-report" className="w-[800px] bg-white text-zinc-900 p-12 hidden" style={{ fontFamily: '"Avenir Next", Avenir, sans-serif' }}>
             {/* Header */}
             <div className="border-b-2 border-zinc-900 pb-6 mb-8 flex justify-between items-end">
                 <div>
