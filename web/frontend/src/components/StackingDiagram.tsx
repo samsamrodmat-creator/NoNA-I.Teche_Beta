@@ -105,11 +105,9 @@ function Block3D({ colorClass, shadeClass, topClass, height, label, floors }: { 
     // Top Face = separate div
 
     return (
-        <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: Math.max(height, 8), opacity: 1 }}
+        <div
             className="relative w-full group transition-all duration-300 hover:brightness-110"
-            style={{ transformStyle: "preserve-3d" }}
+            style={{ transformStyle: "preserve-3d", height: Math.max(height, 8), opacity: 1 }}
         >
             {/* Front Face */}
             <div className={`absolute inset-0 ${colorClass} border-b border-white/5 flex items-center justify-center`}>
@@ -135,6 +133,6 @@ function Block3D({ colorClass, shadeClass, topClass, height, label, floors }: { 
             >
                 {floors.toFixed(1)} Niveles
             </div>
-        </motion.div>
+        </div>
     )
 }

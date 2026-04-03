@@ -111,7 +111,7 @@ class ScenarioOut(BaseModel):
 # --- Endpoints ---
 
 @app.post("/calculate")
-async def calculate(req: CalculationRequest, db: Session = Depends(get_db)):
+def calculate(req: CalculationRequest, db: Session = Depends(get_db)):
     # 1. Fetch current parameters from DB
     params_db = db.query(database.Parameter).all()
     params_dict = {p.key: p.value for p in params_db}
@@ -127,7 +127,7 @@ async def calculate(req: CalculationRequest, db: Session = Depends(get_db)):
     return result
 
 @app.post("/export/csv")
-async def export_csv(req: CalculationRequest, db: Session = Depends(get_db)):
+def export_csv(req: CalculationRequest, db: Session = Depends(get_db)):
     # 1. Fetch current parameters from DB
     params_db = db.query(database.Parameter).all()
     params_dict = {p.key: p.value for p in params_db}

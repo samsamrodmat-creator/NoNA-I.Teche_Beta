@@ -353,3 +353,7 @@ except Exception as e:
     export_status = f"Error: {str(e)}"
     # Set default values for outputs to avoid null component errors
     if 'Costo_total_Construccion' not in vars(): Costo_total_Construccion = "Error"
+
+        
+
+    

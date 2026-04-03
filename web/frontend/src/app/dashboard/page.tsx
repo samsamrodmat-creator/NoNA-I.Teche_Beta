@@ -7,6 +7,9 @@ import { SelectField } from "@/components/SelectField";
 import { SEGMENT_TYPES, PARKING_TYPES } from "@/lib/constants";
 // import { StackingDiagram } from "@/components/StackingDiagram";
 import { SettingsModal } from "@/components/SettingsModal";
+import { CfoCommercialAnalysis } from "@/components/CfoCommercialAnalysis";
+import { ViabilityScore } from "@/components/ViabilityScore";
+import { NonaInsights } from "@/components/NonaInsights";
 import { FinancialAnalysis } from "@/components/FinancialAnalysis";
 import { ProjectReport } from "@/components/ProjectReport";
 import { FormulaReport } from "@/components/FormulaReport";
@@ -41,6 +44,7 @@ import {
 import dynamic from 'next/dynamic';
 import { toPng } from 'html-to-image';
 import { jsPDF } from 'jspdf';
+import { motion } from 'framer-motion';
 
 const LocationPicker = dynamic(() => import('@/components/LocationPicker'), {
   loading: () => <div className="h-[300px] w-full bg-zinc-900 animate-pulse rounded-lg" />,
@@ -78,42 +82,58 @@ export default function Home() {
 
   const exportPDF = async () => {
     // Use the new Project Report component
-    const element = document.getElementById('project-report');
-    if (!element) return;
+    const parentContainer = document.getElementById('project-report');
+    if (!parentContainer) return;
 
     // Temporarily show
-    element.style.display = 'block';
+    parentContainer.style.display = 'block';
 
     try {
       showToast("Generating Executive Report...", "info");
 
-      const dataUrl = await toPng(element, {
-        backgroundColor: '#ffffff',
-        cacheBust: true,
-        pixelRatio: 2 // High quality
-      });
+      const pages = ['project-page-1', 'project-page-2', 'project-page-3', 'project-page-4', 'project-page-5', 'project-page-6', 'project-page-7', 'project-page-8'];
+      let pdf: any = null;
 
-      const img = new Image();
-      img.src = dataUrl;
-      await new Promise(resolve => img.onload = resolve);
+      for (let i = 0; i < pages.length; i++) {
+        const pageEl = document.getElementById(pages[i]);
+        if (!pageEl) continue;
 
-      // Calculate aspect ratio for A4 Landscape approx
-      const pdf = new jsPDF({
-        orientation: 'landscape',
-        unit: 'px',
-        format: [img.width, img.height] // Match image size exactly for crispness
-      });
+        const dataUrl = await toPng(pageEl, {
+          backgroundColor: '#ffffff',
+          cacheBust: true,
+          pixelRatio: 2 // High quality
+        });
 
-      pdf.addImage(dataUrl, 'PNG', 0, 0, img.width, img.height);
-      pdf.save(`NoNA_Executive_${data.project_name || 'Project'}_${new Date().toISOString().slice(0, 10)}.pdf`);
+        const img = new Image();
+        img.src = dataUrl;
+        await new Promise((resolve, reject) => { 
+            img.onload = resolve; 
+            img.onerror = () => reject(new Error("Image failed to render in PDF export"));
+        });
 
-      showToast("Report Exported");
+        if (i === 0) {
+          pdf = new jsPDF({
+            orientation: img.width > img.height ? 'landscape' : 'portrait',
+            unit: 'px',
+            format: [img.width, img.height]
+          });
+          pdf.addImage(dataUrl, 'PNG', 0, 0, img.width, img.height);
+        } else {
+          pdf.addPage([img.width, img.height], img.width > img.height ? 'landscape' : 'portrait');
+          pdf.addImage(dataUrl, 'PNG', 0, 0, img.width, img.height);
+        }
+      }
+
+      if (pdf) {
+        pdf.save(`NoNA_Executive_${data.project_name || 'Project'}_${new Date().toISOString().slice(0, 10)}.pdf`);
+        showToast("Report Exported");
+      }
 
     } catch (e) {
       console.error(e);
       showToast("Failed to generate report", "error");
     } finally {
-      element.style.display = 'none';
+      parentContainer.style.display = 'none';
     }
   };
 
@@ -134,7 +154,10 @@ export default function Home() {
 
       const img = new Image();
       img.src = dataUrl;
-      await new Promise(resolve => img.onload = resolve);
+      await new Promise((resolve, reject) => {
+          img.onload = resolve;
+          img.onerror = () => reject(new Error("Formula Image failed to load in PDF export"));
+      });
 
       const pdf = new jsPDF({
         orientation: 'portrait',
@@ -442,12 +465,18 @@ export default function Home() {
             )}
 
             {/* Top KPIs */}
-            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
+            <motion.div 
+              className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, staggerChildren: 0.1 }}
+            >
               <MetricCard
-                label="Utilidad Final"
-                value={results?.metrics?.Text_Utilidad_Final || "0%"}
+                label="Utilidad Real"
+                value={results?.metrics?.Text_Utilidad_Inicial || "0%"}
                 icon={TrendingUp}
-                className={results && results.raw.utilidad_optimizada < data.utilidadDeseada ? "border-red-500/50 bg-red-500/5" : "border-emerald-500/50 bg-emerald-500/5"}
+                className={results && results.raw.utilidad_inicial < (data.utilidadDeseada - 0.01) ? "border-red-500/50 bg-red-500/5 [&_h3.text-slate-900]:text-red-500 dark:[&_h3.text-slate-900]:text-red-400" : "border-emerald-500/50 bg-emerald-500/5"}
+                subValue={results && results.raw.utilidad_inicial < (data.utilidadDeseada - 0.01) ? `Meta: ${data.utilidadDeseada}%` : `Cumple Meta`}
               />
               <MetricCard
                 label="Costo por construcción de departamento"
@@ -475,7 +504,107 @@ export default function Home() {
                 value={results?.metrics?.Text_Area_Promedio_Vivienda || "0 m²"}
                 icon={Maximize}
               />
-            </div>
+            </motion.div>
+
+            {/* ══ INTELLIGENCE ENGINE v2.0 ══ */}
+            {results && !results.error && results.raw?.viability_score && (
+              <div className="animate-in fade-in duration-700 slide-in-from-bottom-4 space-y-4">
+                {/* Viability Score Gauge */}
+                <ViabilityScore 
+                  data={results.raw.viability_score} 
+                  onOptimize={(changes) => {
+                    // Apply all suggested parameter changes
+                    const newData = { ...data };
+                    Object.entries(changes).forEach(([key, val]) => {
+                      handleChange(key as any, val);
+                      (newData as any)[key] = val;
+                    });
+                    // Recalculate with all changes applied
+                    calculate(newData);
+                  }}
+                />
+                
+                {/* Intelligent Insights + Banking + Commercial Recommendation */}
+                {results.raw.insights && results.raw.insights.length > 0 && (
+                  <NonaInsights 
+                    insights={results.raw.insights}
+                    banking={results.raw.banking}
+                    comercialRecomendacion={results.raw.comercial_recomendacion || ''}
+                    comercialRazon={results.raw.comercial_razon || ''}
+                    onAutoAjustar={() => {
+                      const targetPrice = results.raw.target_precio_venta_m2;
+                      if (targetPrice) {
+                        const newPrice = Number(targetPrice.toFixed(2));
+                        handleChange('Costo_de_venta_m2', newPrice);
+                        const newData = { ...data, Costo_de_venta_m2: newPrice };
+                        calculate(newData);
+                      }
+                    }}
+                  />
+                )}
+              </div>
+            )}
+
+            {/* NoNA AI Advisor */}
+            {results && !results.error && results.raw.utilidad_inicial < (data.utilidadDeseada - 0.01) && (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }} 
+                animate={{ opacity: 1, scale: 1 }} 
+                className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-6 md:p-8 shadow-2xl border border-indigo-500/30 relative overflow-hidden group"
+              >
+                {/* Glow effect */}
+                <div className="absolute -top-32 -right-32 w-96 h-96 bg-indigo-500 rounded-full mix-blend-screen filter blur-[100px] opacity-20 group-hover:opacity-40 transition-opacity duration-700"></div>
+                <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-blue-500 rounded-full mix-blend-screen filter blur-[100px] opacity-20 group-hover:opacity-30 transition-opacity duration-700"></div>
+                
+                <div className="relative z-10 flex flex-col lg:flex-row gap-8 items-center justify-between">
+                  <div className="flex-1 space-y-4 relative text-white">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="bg-gradient-to-br from-indigo-500 to-blue-600 p-2 rounded-xl shadow-lg shadow-indigo-500/30">
+                        <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                      </div>
+                      <h3 className="font-extrabold text-xl tracking-tight text-white flex items-center gap-2">
+                        NoNA Inteligencia Prospectiva
+                        <span className="bg-indigo-500/20 text-indigo-300 text-[9px] px-2 py-0.5 rounded-full uppercase tracking-widest border border-indigo-400/20">AI Advisor</span>
+                      </h3>
+                    </div>
+                    <p className="text-[15px] text-zinc-300 leading-relaxed max-w-3xl">
+                      La utilidad real estimada es del <span className="font-bold text-red-400">{results.metrics.Text_Utilidad_Inicial}</span>, insuficiente para alcanzar tu meta del <span className="font-bold text-emerald-400">{data.utilidadDeseada}%</span> bajo las condiciones actuales de diseño y costo paramétrico.
+                    </p>
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-4 flex flex-col sm:flex-row gap-4 sm:items-center max-w-3xl">
+                      <div className="flex-1">
+                        <p className="text-sm text-zinc-400">Acción recomendada para viabilidad:</p>
+                        <p className="text-white font-medium mt-1">Incrementar Precio Promedio de Venta a <span className="font-bold text-indigo-300 bg-indigo-500/20 px-2 py-0.5 rounded ml-1">{results.metrics.Text_Target_Precio_Venta_M2} / m²</span></p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <button 
+                    onClick={() => {
+                        const targetPrice = results.raw.target_precio_venta_m2;
+                        if(targetPrice) {
+                            const newPrice = Number(targetPrice.toFixed(2));
+                            handleChange('Costo_de_venta_m2', newPrice);
+                            
+                            // Disparar recálculo automático
+                            const newData = { ...data, Costo_de_venta_m2: newPrice };
+                            calculate(newData);
+                        }
+                    }}
+                    className="shrink-0 group/btn relative inline-flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-400 to-emerald-500 hover:from-emerald-300 hover:to-emerald-400 text-emerald-950 px-8 py-4 rounded-2xl text-sm font-black tracking-wide shadow-[0_0_30px_rgba(16,185,129,0.2)] hover:shadow-[0_0_50px_rgba(16,185,129,0.4)] hover:-translate-y-1 transition-all overflow-hidden w-full lg:w-auto"
+                  >
+                    <span className="relative z-10 flex items-center gap-2">
+                        <svg className="w-4 h-4 transition-transform group-hover/btn:rotate-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                        </svg>
+                        Auto-Ajustar Proyecto
+                    </span>
+                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform rounded-2xl"></div>
+                  </button>
+                </div>
+              </motion.div>
+            )}
 
             {/* New Financial Analysis Section */}
             {results && !results.error && (
@@ -484,8 +613,22 @@ export default function Home() {
               </div>
             )}
 
+            {/* CFO PRO ENGINE SECTION */}
+            {results?.raw?.flujo_especulativo && results?.raw?.cfo && (
+              <div className="animate-in fade-in duration-700 slide-in-from-bottom-6 mt-6 mb-8">
+                <div className="bg-white/60 backdrop-blur-md border border-white/40 shadow-[0_10px_30px_rgba(0,0,0,0.03)] rounded-2xl overflow-hidden transition-all hover:shadow-[0_15px_40px_rgba(0,0,0,0.06)]">
+                   <CfoCommercialAnalysis data={results.raw as any} isPrint={false} />
+                </div>
+              </div>
+            )}
+
             {/* Detailed Breakdown Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <motion.div 
+              className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+            >
 
               {/* Financial Breakdown */}
               <div className="bg-white/60 backdrop-blur-md border border-white/40 shadow-[0_10px_30px_rgba(0,0,0,0.03)] rounded-2xl p-6 transition-all hover:shadow-[0_15px_40px_rgba(0,0,0,0.06)]">
@@ -597,9 +740,32 @@ export default function Home() {
                     <StatBox label="Costo Total" value={results?.raw.parking_cost ? `$${(results.raw.parking_cost / 1000000).toFixed(1)}M` : "$0"} />
                   </div>
                 </div>
+
+                {/* Parametric Catalog Summary */}
+                {results?.raw?.catalogo_obra && (
+                  <div className="bg-white/60 backdrop-blur-md border border-white/40 shadow-[0_10px_30px_rgba(0,0,0,0.03)] rounded-2xl p-6 transition-all hover:shadow-[0_15px_40px_rgba(0,0,0,0.06)] mt-6">
+                    <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-slate-900 tracking-tight">
+                      <LayoutDashboard className="w-5 h-5 text-indigo-500" />
+                      Presupuesto de Obra Paramétrico
+                    </h3>
+                    <div className="space-y-1">
+                        {results.raw.catalogo_obra.map((partida: any, idx: number) => (
+                           <div key={idx} className="flex justify-between items-center text-xs border-b border-zinc-100 py-1.5 hover:bg-zinc-50/50 px-1 rounded transition-colors">
+                             <div className="flex flex-col">
+                                <span className="font-bold text-zinc-700">{partida.concepto}</span>
+                             </div>
+                             <div className="flex items-center gap-3">
+                                <span className="text-[10px] bg-zinc-100 px-1.5 py-0.5 rounded text-zinc-500">{(partida.peso_porcentaje).toFixed(1)}%</span>
+                                <span className="font-medium text-zinc-800">${(partida.monto_total || 0).toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0})}</span>
+                             </div>
+                           </div>
+                        ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
-            </div>
+            </motion.div>
 
           </div>
         </main >
